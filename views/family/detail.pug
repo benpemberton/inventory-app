@@ -1,0 +1,25 @@
+extends ../layout
+
+block content
+
+  h1 Family: #{family.name}
+  p #{family.description}
+
+  div(style='margin-left:20px;margin-top:20px')
+
+    h4 Instruments
+
+    dl
+      each instrument in instruments
+        dt
+          a(href=instrument.url) #{instrument.name}
+        dd #{instrument.description}
+
+      else
+        p This family doesn't currently have any instruments.
+
+  hr
+  p
+    a(href=family.url+'/delete') Delete family
+  p
+    a(href=family.url+'/update') Update family

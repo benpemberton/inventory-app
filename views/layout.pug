@@ -4,4 +4,18 @@ html
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
+    block navbar
+      ul
+        li
+          a(href='/') Index
+        li
+          a(href='/family') Families
+        li
+          a(href='/instrument') Instruments
+        li
+          a(href='/product') Products
+        li
+          a(href='/unit') Units
+
     block content
+

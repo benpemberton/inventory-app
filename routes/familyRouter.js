@@ -11,17 +11,17 @@ router.get("/create", family_controller.create_get);
 // POST request for creating Family.
 router.post("/create", family_controller.create_post);
 
-// // GET request to delete Family.
-// router.get("/:id/delete", family_controller.family_delete_get);
+// GET request to delete Family.
+router.get("/:id/delete", family_controller.delete_get);
 
-// // POST request to delete Family.
-// router.post("/:id/delete", family_controller.family_delete_post);
+// POST request to delete Family.
+router.post("/:id/delete", family_controller.delete_post);
 
-// // GET request to update Family.
-// router.get("/:id/update", family_controller.family_update_get);
+// GET request to update Family.
+router.get("/:id/update", family_controller.update_get);
 
-// // POST request to update Family.
-// router.post("/:id/update", family_controller.family_update_post);
+// POST request to update Family.
+router.post("/:id/update", family_controller.update_post);
 
 // GET request for one Family.
 router.get("/:id", family_controller.detail);

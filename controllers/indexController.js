@@ -1,20 +1,15 @@
-const Book = require("../models/book");
-const Author = require("../models/author");
-const Genre = require("../models/genre");
-const BookInstance = require("../models/bookinstance");
+const Family = require("../models/family");
+const Instrument = require("../models/instrument");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
 exports.index = asyncHandler(async (req, res, next) => {
-  // Get details of books, book instances, authors and genre counts (in parallel)
+  // Get details of families, instruments, products and units (in parallel)
   const [
-    numBooks,
-    numBookInstances,
-    numAvailableBookInstances,
-    numAuthors,
-    numGenres,
+    families,
+    instruments,
   ] = await Promise.all([
-    Book.countDocuments({}).exec(),
+    Family.countDocuments({}).exec(),
     BookInstance.countDocuments({}).exec(),
     BookInstance.countDocuments({ status: "Available" }).exec(),
     Author.countDocuments({}).exec(),

@@ -1,4 +1,5 @@
 const Family = require("../models/family");
+const Instrument = require("../models/instrument");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
@@ -6,7 +7,7 @@ const { body, validationResult } = require("express-validator");
 exports.list = asyncHandler(async (req, res, next) => {
   const allFamilies = await Family.find().sort({ name: 1 }).exec();
   res.render("family/list", {
-    title: "Family List",
+    title: "Families",
     family_list: allFamilies,
   });
 });
@@ -48,13 +49,10 @@ exports.create_post = [
     .withMessage("Name must be specified.")
     .isAlphanumeric()
     .withMessage("Name has non-alphanumeric characters."),
-  body("description")
+  body("description", "Family requires a proper description.")
     .trim()
     .isLength({ min: 3, max: 200 })
-    .escape()
-    .withMessage("Description must be specified.")
-    .isAlphanumeric()
-    .withMessage("Description has non-alphanumeric characters."),
+    .escape(),
 
   // Process request after validation and sanitization.
   asyncHandler(async (req, res, next) => {
@@ -86,85 +84,80 @@ exports.create_post = [
   }),
 ];
 
-// Display Author delete form on GET.
-exports.author_delete_get = asyncHandler(async (req, res, next) => {
-  // Get details of author and all their books (in parallel)
-  const [author, allBooksByAuthor] = await Promise.all([
-    Author.findById(req.params.id).exec(),
-    Book.find({ author: req.params.id }, "title summary").exec(),
+// Display Family delete form on GET.
+exports.delete_get = asyncHandler(async (req, res, next) => {
+  // Get details of family and all its instruments (in parallel)
+  const [family, instrumentsInFamily] = await Promise.all([
+    Family.findById(req.params.id).exec(),
+    Instrument.find({ family: req.params.id }, "name description").exec(),
   ]);
 
-  if (author === null) {
+  if (family === null) {
     // No results.
-    res.redirect("/catalog/authors");
+    res.redirect("/family");
   }
 
-  res.render("author_delete", {
-    title: "Delete Author",
-    author: author,
-    author_books: allBooksByAuthor,
+  res.render("family/delete", {
+    title: "Delete Family",
+    family: family,
+    instruments: instrumentsInFamily,
   });
 });
 
 // Handle Author delete on POST.
-exports.author_delete_post = asyncHandler(async (req, res, next) => {
-  // Get details of author and all their books (in parallel)
-  const [author, allBooksByAuthor] = await Promise.all([
-    Author.findById(req.params.id).exec(),
-    Book.find({ author: req.params.id }, "title summary").exec(),
+exports.delete_post = asyncHandler(async (req, res, next) => {
+  // Get details of family and all its instruments (in parallel)
+  const [family, instrumentsInFamily] = await Promise.all([
+    Family.findById(req.params.id).exec(),
+    Instrument.find({ family: req.params.id }, "name description").exec(),
   ]);
 
-  if (allBooksByAuthor.length > 0) {
-    // Author has books. Render in same way as for GET route.
-    res.render("author_delete", {
-      title: "Delete Author",
-      author: author,
-      author_books: allBooksByAuthor,
+  if (instrumentsInFamily.length > 0) {
+    // Family has instruments. Render in same way as for GET route.
+    res.render("family/delete", {
+      title: "Delete Family",
+      family: family,
+      instruments: instrumentsInFamily,
     });
     return;
   } else {
-    // Author has no books. Delete object and redirect to the list of authors.
-    await Author.findByIdAndRemove(req.body.authorid);
-    res.redirect("/catalog/authors");
+    // Family has no instruments. Delete object and redirect to the list of families.
+    await Family.findByIdAndRemove(req.body.familyid);
+    res.redirect("/family");
   }
 });
 
-// Display Author update form on GET.
-exports.author_update_get = asyncHandler(async (req, res, next) => {
-  // Get author for form.
-  const author = await Author.findById(req.params.id).exec();
+// Display Family update form on GET.
+exports.update_get = asyncHandler(async (req, res, next) => {
+  // Get family for form.
+  const family = await Family.findById(req.params.id).exec();
 
-  if (author === null) {
+  if (family === null) {
     // No results.
-    const err = new Error("Author not found");
+    const err = new Error("Family not found");
     err.status = 404;
     return next(err);
   }
-  res.render("author_form", {
-    title: "Update Author",
-    author: author,
+  res.render("family/form", {
+    title: "Update Family",
+    family: family,
   });
 });
 
 // Handle Author update on POST.
-exports.author_update_post = [
+exports.update_post = [
   // Validate and sanitize fields.
-  body("first_name", "First name must not be empty.")
+  body("name")
     .trim()
-    .isLength({ min: 1, max: 100 })
-    .escape(),
-  body("family_name", "Last name must not be empty.")
+    .isLength({ min: 3, max: 100 })
+    .escape()
+    .withMessage("Name must be specified.")
+    .isAlphanumeric()
+    .withMessage("Name has non-alphanumeric characters."),
+  body("description", "Family requires a proper description.")
     .trim()
-    .isLength({ min: 1, max: 100 })
+    .isLength({ min: 3, max: 200 })
     .escape(),
-  body("date_of_birth", "Invalid date")
-    .optional({ values: "falsy" })
-    .isISO8601()
-    .toDate(),
-  body("date_of_birth", "Invalid date")
-    .optional({ values: "falsy" })
-    .isISO8601()
-    .toDate(),
 
   // Process request after validation and sanitization.
   asyncHandler(async (req, res, next) => {
@@ -172,31 +165,29 @@ exports.author_update_post = [
     const errors = validationResult(req);
 
     // Create a Book object with escaped/trimmed data and old id.
-    const author = new Author({
-      first_name: req.body.first_name,
-      family_name: req.body.family_name,
-      date_of_birth: req.body.date_of_birth,
-      date_of_death: req.body.date_of_death,
+    const family = new Family({
+      name: req.body.name,
+      description: req.body.description,
       _id: req.params.id, // This is required, or a new ID will be assigned!
     });
 
     if (!errors.isEmpty()) {
       // There are errors. Render form again with sanitized values/error messages.
-      res.render("author_form", {
-        title: "Update Author",
-        author: author,
+      res.render("family/form", {
+        title: "Update Family",
+        family: family,
         errors: errors.array(),
       });
       return;
     } else {
       // Data from form is valid. Update the record.
-      const theauthor = await Author.findByIdAndUpdate(
+      const thefamily = await Family.findByIdAndUpdate(
         req.params.id,
-        author,
+        family,
         {}
       );
       // Redirect to book detail page.
-      res.redirect(theauthor.url);
+      res.redirect(thefamily.url);
     }
   }),
 ];

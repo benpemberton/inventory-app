@@ -1,0 +1,30 @@
+extends ../layout
+
+block content
+  h1=title
+
+  form(method='POST' action='')
+    div.form-group
+      label(for='name') Instrument name:
+      input#name.form-control(type='text' placeholder='Instrument name' name='name' required='true' value=(undefined===instrument ? '' : instrument.name) )
+      label(for='description') Description:
+      textarea#description.form-control(type='textarea' placeholder='Description' name='description' required='true') #{undefined===instrument ? '' : instrument.description}
+
+    div.form-group
+      label(for='family') Family:
+      select#family.form-control(type='select', placeholder='Select family' name='family' required='true' )
+        - families.sort(function(a, b) {return (a < b) ? -1 : (a > b) ? 1 : 0;});
+        for family in families
+          if instrument
+            option(value=family._id selected=(family._id.toString()===instrument.family._id.toString() ? 'selected' : false) ) #{family.name}
+          else
+            option(value=family._id) #{family.name}
+
+    button.btn.btn-primary(type='submit') Submit
+  if errors
+    ul
+      for error in errors
+        li!= error.msg
+
+
+        

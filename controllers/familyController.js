@@ -164,7 +164,7 @@ exports.update_post = [
     // Extract the validation errors from a request.
     const errors = validationResult(req);
 
-    // Create a Book object with escaped/trimmed data and old id.
+    // Create a Family object with escaped/trimmed data and old id.
     const family = new Family({
       name: req.body.name,
       description: req.body.description,

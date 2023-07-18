@@ -1,0 +1,25 @@
+extends ../layout
+
+block content
+
+  h1 Instrument: #{instrument.name}
+  p #{instrument.description}
+
+  div(style='margin-left:20px;margin-top:20px')
+
+    h4 Products
+
+    dl
+      each product in products
+        dt
+          a(href=product.url) #{product.name}
+        dd #{product.description}
+
+      else
+        p This instrument doesn't currently have any associated products.
+
+  hr
+  p
+    a(href=instrument.url+'/delete') Delete instrument
+  p
+    a(href=instrument.url+'/update') Update instrument

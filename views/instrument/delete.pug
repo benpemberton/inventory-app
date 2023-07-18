@@ -1,0 +1,27 @@
+extends ../layout
+
+block content
+  h1 #{title}: #{instrument.name}
+
+  if products.length
+
+    p #[strong Delete the following products before attempting to delete this instrument.]
+
+    div(style='margin-left:20px;margin-top:20px')
+
+      h4 Products
+
+      dl
+      each product in products
+        dt
+          a(href=product.url) #{product.name}
+        dd #{product.description}
+
+  else
+    p Do you really want to delete this Instrument?
+
+    form(method='POST' action='')
+      div.form-group
+        input#instrumentid.form-control(type='hidden',name='instrumentid', required='true', value=instrument._id )
+
+      button.btn.btn-primary(type='submit') Delete

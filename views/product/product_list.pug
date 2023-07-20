@@ -1,0 +1,16 @@
+extends ../layout
+
+block content
+  h1= title
+  p Here is a list of all the types of instrument that we are currently stocking.
+
+  if instrument_list.length
+
+    ul
+    each instrument in instrument_list
+      li
+        a(href=instrument.url) #{instrument.name}
+
+  else 
+
+   h4 No instruments could be found!

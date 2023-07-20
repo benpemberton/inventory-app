@@ -1,0 +1,27 @@
+extends ../layout
+
+block content
+  h1 #{title}: #{product.name}
+
+  if units.length
+
+    p #[strong Delete the following units before attempting to delete this product.]
+
+    div(style='margin-left:20px;margin-top:20px')
+
+      h4 Units
+
+      dl
+      each unit in units
+        dt
+          a(href=unit.url) #{unit.name}
+        dd #{unit.description}
+
+  else
+    p Do you really want to delete this Product?
+
+    form(method='POST' action='')
+      div.form-group
+        input#productid.form-control(type='hidden', name='productid', required='true', value=product._id)
+
+      button.btn.btn-primary(type='submit') Delete

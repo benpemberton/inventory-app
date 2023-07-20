@@ -1,0 +1,25 @@
+extends ../layout
+
+block content
+
+  h1 Product: #{product.name}
+  p #{product.description}
+
+  div(style='margin-left:20px;margin-top:20px')
+
+    h4 Units
+
+    dl
+      each unit in units
+        dt
+          a(href=unit.url) #{unit.name}
+        dd #{unit.description}
+
+      else
+        p This product doesn't currently have any associated units.
+
+  hr
+  p
+    a(href=product.url+'/delete') Delete product
+  p
+    a(href=product.url+'/update') Update product

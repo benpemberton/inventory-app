@@ -1,0 +1,30 @@
+extends ../layout
+
+block content
+  h1=title
+
+  form(method='POST' action='')
+    div.form-group
+      label(for='name') Product name:
+      input#name.form-control(type='text' placeholder='Product name' name='name' required='true' value=(undefined===product ? '' : product.name) )
+      label(for='description') Description:
+      textarea#description.form-control(type='textarea' placeholder='Description' name='description' required='true') #{undefined===product ? '' : product.description}
+
+    div.form-group
+      label(for='instrument') Instrument:
+      select#instrument.form-control(type='select', placeholder='Select instrument' name='instrument' required='true' )
+        - instruments.sort(function(a, b) {return (a < b) ? -1 : (a > b) ? 1 : 0;});
+        for instrument in instruments
+          if product
+            option(value=instrument._id selected=(instrument._id.toString()===product.instrument._id.toString() ? 'selected' : false) ) #{instrument.name}
+          else
+            option(value=instrument._id) #{instrument.name}
+
+    button.btn.btn-primary(type='submit') Submit
+  if errors
+    ul
+      for error in errors
+        li!= error.msg
+
+
+        

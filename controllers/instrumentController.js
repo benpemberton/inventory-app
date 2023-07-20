@@ -7,7 +7,7 @@ const { body, validationResult } = require("express-validator");
 // Display list of all Instruments.
 exports.list = asyncHandler(async (req, res, next) => {
   const allInstruments = await Instrument.find().sort({ name: 1 }).exec();
-  res.render("instrument/list", {
+  res.render("instrument/instrument_list", {
     title: "Instruments",
     instrument_list: allInstruments,
   });
@@ -28,7 +28,7 @@ exports.detail = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
-  res.render("instrument/detail", {
+  res.render("instrument/instrument_detail", {
     title: "Instrument Detail",
     instrument: instrument,
     products: allProducts,
@@ -37,24 +37,21 @@ exports.detail = asyncHandler(async (req, res, next) => {
 
 // Display Instrument create form on GET.
 exports.create_get = asyncHandler(async (req, res, next) => {
-    const allFamilies = await Family.find().exec();
+  const allFamilies = await Family.find().exec();
 
-  res.render("instrument/form", { 
+  res.render("instrument/instrument_form", {
     title: "Create Instrument",
     families: allFamilies,
-    });
+  });
 });
 
 // Handle Instrument create form on POST.
 exports.create_post = [
   // Validate and sanitize fields.
-  body("name")
+  body("name", "Name must be specified.")
     .trim()
     .isLength({ min: 3, max: 100 })
-    .escape()
-    .withMessage("Name must be specified.")
-    .isAlphanumeric()
-    .withMessage("Name has non-alphanumeric characters."),
+    .escape(),
   body("description", "Instrument requires a proper description.")
     .trim()
     .isLength({ min: 3, max: 200 })
@@ -78,11 +75,11 @@ exports.create_post = [
 
     if (!errors.isEmpty()) {
       // There are errors. Render form again with sanitized values/errors messages.
-    
+
       // Get all families for form.
       const allFamilies = await Family.find().exec();
 
-      res.render("instrument/form", {
+      res.render("instrument/instrument_form", {
         title: "Create Instrument",
         instrument: instrument,
         families: allFamilies,
@@ -113,7 +110,7 @@ exports.delete_get = asyncHandler(async (req, res, next) => {
     res.redirect("/instrument");
   }
 
-  res.render("instrument/delete", {
+  res.render("instrument/instrument_delete", {
     title: "Delete Instrument",
     instrument: instrument,
     products: assocProducts,
@@ -130,7 +127,7 @@ exports.delete_post = asyncHandler(async (req, res, next) => {
 
   if (assocProducts.length > 0) {
     // Instrument has products. Render in same way as for GET route.
-    res.render("instrument/delete", {
+    res.render("instrument/instrument_delete", {
       title: "Delete Instrument",
       instrument: instrument,
       products: assocProducts,
@@ -146,9 +143,9 @@ exports.delete_post = asyncHandler(async (req, res, next) => {
 // Display Instrument update form on GET.
 exports.update_get = asyncHandler(async (req, res, next) => {
   // Get instrument and families for form.
-  const [ instrument, allFamilies ] = await Promise.all([
-    Instrument.findById(req.params.id).exec(), 
-    Family.find().exec()
+  const [instrument, allFamilies] = await Promise.all([
+    Instrument.findById(req.params.id).exec(),
+    Family.find().exec(),
   ]);
 
   if (instrument === null) {
@@ -157,7 +154,7 @@ exports.update_get = asyncHandler(async (req, res, next) => {
     err.status = 404;
     return next(err);
   }
-  res.render("instrument/form", {
+  res.render("instrument/instrument_form", {
     title: "Update Instrument",
     instrument: instrument,
     families: allFamilies,
@@ -199,10 +196,10 @@ exports.update_post = [
     if (!errors.isEmpty()) {
       // There are errors. Render form again with sanitized values/error messages.
 
-    // Get families for form.
-    const allFamilies  = Family.find().exec();
+      // Get families for form.
+      const allFamilies = Family.find().exec();
 
-      res.render("instrument/form", {
+      res.render("instrument/instrument_form", {
         title: "Update Instrument",
         instrument: instrument,
         families: allFamilies,

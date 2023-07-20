@@ -6,7 +6,7 @@ const { body, validationResult } = require("express-validator");
 // Display list of all Families.
 exports.list = asyncHandler(async (req, res, next) => {
   const allFamilies = await Family.find().sort({ name: 1 }).exec();
-  res.render("family/list", {
+  res.render("family/family_list", {
     title: "Families",
     family_list: allFamilies,
   });
@@ -27,7 +27,7 @@ exports.detail = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
-  res.render("family/detail", {
+  res.render("family/family_detail", {
     title: "Family Detail",
     family: family,
     instruments: instrumentsInFamily,
@@ -36,7 +36,7 @@ exports.detail = asyncHandler(async (req, res, next) => {
 
 // Display Family create form on GET.
 exports.create_get = (req, res, next) => {
-  res.render("family/form", { title: "Create Family" });
+  res.render("family/family_form", { title: "Create Family" });
 };
 
 // Handle Family create form on POST.
@@ -67,7 +67,7 @@ exports.create_post = [
 
     if (!errors.isEmpty()) {
       // There are errors. Render form again with sanitized values/errors messages.
-      res.render("family/form", {
+      res.render("family/family_form", {
         title: "Create Family",
         family: family,
         errors: errors.array(),
@@ -97,7 +97,7 @@ exports.delete_get = asyncHandler(async (req, res, next) => {
     res.redirect("/family");
   }
 
-  res.render("family/delete", {
+  res.render("family/family_delete", {
     title: "Delete Family",
     family: family,
     instruments: instrumentsInFamily,
@@ -114,7 +114,7 @@ exports.delete_post = asyncHandler(async (req, res, next) => {
 
   if (instrumentsInFamily.length > 0) {
     // Family has instruments. Render in same way as for GET route.
-    res.render("family/delete", {
+    res.render("family/family_delete", {
       title: "Delete Family",
       family: family,
       instruments: instrumentsInFamily,
@@ -138,7 +138,7 @@ exports.update_get = asyncHandler(async (req, res, next) => {
     err.status = 404;
     return next(err);
   }
-  res.render("family/form", {
+  res.render("family/family_form", {
     title: "Update Family",
     family: family,
   });
@@ -173,7 +173,7 @@ exports.update_post = [
 
     if (!errors.isEmpty()) {
       // There are errors. Render form again with sanitized values/error messages.
-      res.render("family/form", {
+      res.render("family/family_form", {
         title: "Update Family",
         family: family,
         errors: errors.array(),

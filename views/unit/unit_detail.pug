@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+
+  h1 Unit: #{unit._id}
+  p #{unit.product.name}
+  p #{unit.price}
+  p #{unit.condition}
+  p #{unit.location}
+
+  hr
+  p
+    a(href=unit.url+'/delete') Delete unit
+  p
+    a(href=unit.url+'/update') Update unit

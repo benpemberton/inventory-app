@@ -2,8 +2,8 @@ let express = require("express");
 let router = express.Router();
 const product_controller = require("../controllers/productController");
 
-// // GET list of products
-// router.get("/", product_controller.list);
+// GET list of products
+router.get("/", product_controller.list);
 
 // GET request for creating a Product. NOTE This must come before routes that display Product (uses id).
 router.get("/create", product_controller.create_get);

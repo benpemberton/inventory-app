@@ -8,6 +8,7 @@ let indexRouter = require("./routes/index");
 let familyRouter = require("./routes/familyRouter");
 let instrumentRouter = require("./routes/instrumentRouter");
 let productRouter = require("./routes/productRouter");
+let unitRouter = require("./routes/unitRouter");
 
 let app = express();
 
@@ -43,6 +44,14 @@ app.use("/", indexRouter);
 app.use("/family", familyRouter);
 app.use("/instrument", instrumentRouter);
 app.use("/product", productRouter);
+app.use(
+  "/product/:id/unit",
+  (req, res, next) => {
+    req.productid = req.params.id;
+    next();
+  },
+  unitRouter
+);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

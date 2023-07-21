@@ -4,6 +4,7 @@ block content
 
   h1 Product: #{product.name}
   p #{product.description}
+  p Stock: #{units.length}
 
   div(style='margin-left:20px;margin-top:20px')
 
@@ -12,13 +13,15 @@ block content
     dl
       each unit in units
         dt
-          a(href=unit.url) #{unit.name}
-        dd #{unit.description}
+          a(href=unit.url) #{unit._id}
+        dd #{unit.price}
 
       else
         p This product doesn't currently have any associated units.
 
   hr
+  p
+    a(href=product.url+'/unit/create') Add unit
   p
     a(href=product.url+'/delete') Delete product
   p

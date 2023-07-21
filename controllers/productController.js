@@ -4,21 +4,21 @@ const Unit = require("../models/unit");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
-// // Display list of all Products.
-// exports.list = asyncHandler(async (req, res, next) => {
-//   const allInstruments = await Instrument.find().sort({ name: 1 }).exec();
-//   res.render("instrument/list", {
-//     title: "Instruments",
-//     instrument_list: allInstruments,
-//   });
-// });
+// Display list of all Products.
+exports.list = asyncHandler(async (req, res, next) => {
+  const allProducts = await Product.find().sort({ name: 1 }).exec();
+  res.render("product/product_list", {
+    title: "Products",
+    products: allProducts,
+  });
+});
 
 // Display detail page for a specific Product.
 exports.detail = asyncHandler(async (req, res, next) => {
   // Get details of product and its units (in parallel)
   const [product, productUnits] = await Promise.all([
     Product.findById(req.params.id).exec(),
-    Unit.find({ product: req.params.id }, "name _id condition").exec(),
+    Unit.find({ product: req.params.id }).exec(),
   ]);
 
   if (product === null) {

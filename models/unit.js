@@ -1,18 +1,37 @@
 const mongoose = require("mongoose");
-const asyncHandler = require("express-async-handler");
 
 const Schema = mongoose.Schema;
 
 const UnitSchema = new Schema({
-  name: { type: String, required: true, minLength: 3, maxLength: 100 },
-  description: { type: String, required: true, minLength: 3, maxLength: 200 },
-  instrument: { type: Schema.Types.ObjectId, ref: "Instrument", required: true },
+  product: {
+    type: Schema.Types.ObjectId,
+    ref: "Product",
+    required: true,
+  },
+  price: {
+    type: Number,
+    min: 1,
+    max: 100000,
+    required: true,
+  },
+  condition: {
+    type: String,
+    required: true,
+    enum: ["New", "Good", "Used"],
+    default: "new",
+  },
+  location: {
+    type: String,
+    required: true,
+    enum: ["UK", "Europe", "USA"],
+    default: "UK",
+  },
 });
 
-// Virtual for product's URL
+// Virtual for unit's URL
 UnitSchema.virtual("url").get(function () {
   // We don't use an arrow function as we'll need the this object
-  return `/product/${this._id}`;
+  return `/product/${this.product._id}/unit/${this._id}`;
 });
 
 // Export model

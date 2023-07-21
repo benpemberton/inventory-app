@@ -13,7 +13,7 @@ block content
     div.form-group
       label(for='family') Family:
       select#family.form-control(type='select', placeholder='Select family' name='family' required='true' )
-        - families.sort(function(a, b) {return (a < b) ? -1 : (a > b) ? 1 : 0;});
+        - families.sort(function(a, b) {return (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0;});
         for family in families
           if instrument
             option(value=family._id selected=(family._id.toString()===instrument.family._id.toString() ? 'selected' : false) ) #{family.name}

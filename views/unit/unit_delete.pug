@@ -1,0 +1,13 @@
+extends ../layout
+
+block content
+  h1 #{title}: #{unit._id}
+  p #{unit.product.name}
+
+    p Do you really want to delete this unit?
+
+    form(method='POST' action='')
+      div.form-group
+        input#unitid.form-control(type='hidden', name='unitid', required='true', value=unit._id)
+
+      button.btn.btn-primary(type='submit') Delete

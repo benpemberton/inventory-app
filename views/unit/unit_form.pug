@@ -1,0 +1,36 @@
+extends ../layout
+
+block content
+  h1=title
+
+  form(method='POST' action='')
+    div.form-group
+      label(for='name') Product name:
+      input#name.form-control(type='text' placeholder='Product name' name='name' readonly required='true' value=(unit?unit.product.name:product.name))
+    
+      div.form-group
+        label(for='price') Price £:
+        input#price.form-control(type='number' placeholder='Price' name='price' required='true' value=(undefined===unit ? '' : unit.price))
+
+    div.form-group
+      label(for='condition') Condition:
+      select#condition.form-control(type='select' placeholder='Select condition' name='condition' required='true' )
+        option(value='New' selected=(undefined===unit || unit.condition!='New' ? false:'selected')) New
+        option(value='Good' selected=(undefined===unit || unit.condition!='Good' ? false:'selected')) Good
+        option(value='Used' selected=(undefined===unit || unit.condition!='Used' ? false:'selected')) Used
+
+    div.form-group
+      label(for='location') Location:
+      select#location.form-control(type='select' placeholder='Select location' name='location' required='true' )
+        option(value='UK' selected=(undefined===unit || unit.location!='UK' ? false:'selected')) UK
+        option(value='Europe' selected=(undefined===unit || unit.location!='Europe' ? false:'selected')) Europe
+        option(value='USA' selected=(undefined===unit || unit.location!='USA' ? false:'selected')) USA
+
+    button.btn.btn-primary(type='submit') Submit
+  if errors
+    ul
+      for error in errors
+        li!= error.msg
+
+
+        

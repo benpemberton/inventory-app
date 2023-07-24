@@ -2,20 +2,20 @@ doctype html
 html
   head
     title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/main.css')
   body
-    block navbar
-      ul
-        li
-          a(href='/') Index
-        li
-          a(href='/family') Families
-        li
-          a(href='/instrument') Instruments
-        li
-          a(href='/product') Products
-        li
-          a(href='/unit') Units
+    block nav
+      div.nav
+        div.nav__title
+          a(href="/") Instruments inventory
+        div.nav__links
+          ul
+            li
+              a(href='/instrument') Instruments
+            li
+              a(href='/product') Products
+        div.add-item
+          button.add-item__button +
 
     block content
 

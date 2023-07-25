@@ -1,9 +1,8 @@
 let express = require("express");
 let router = express.Router();
+const index_controller = require('../controllers/indexController')
 
 /* GET home page. */
-router.get("/", function (req, res) {
-  res.render("index", { title: "Musical instruments inventory" });
-});
+router.get("/", index_controller.family_list);
 
 module.exports = router;

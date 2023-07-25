@@ -1,6 +1,19 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  div.page-info
+    h1= title
 
+  div.list-container 
+    if family_list.length
+      each family in family_list
+        div.list-entry
+          a(href=family.url) 
+            div.list-entry__inner
+              div.list-entry__image
+              div.list-entry__details
+                p.list-entry__name #{family.name}
+                p.list-entry__num-items Instruments: 
+
+    else 
+      h4 No instrument families could be found!

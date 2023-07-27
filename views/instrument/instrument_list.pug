@@ -1,16 +1,19 @@
 extends ../layout
 
 block content
-  h1= title
-  p Here is a list of all the types of instrument that we are currently stocking.
+  div.page-info
+    h1= title
 
-  if instrument_list.length
+  div.list-container 
+    if instrument_list.length
+      each instrument in instrument_list
+        div.list-entry
+          a(href=instrument.url) 
+            div.list-entry__inner
+              div.list-entry__image
+              div.list-entry__details
+                p.list-entry__name #{instrument.name}
+                p.list-entry__num-items Products: #{instrument.children}
 
-    ul
-    each instrument in instrument_list
-      li
-        a(href=instrument.url) #{instrument.name}
-
-  else 
-
-   h4 No instruments could be found!
+    else 
+      h4 No instruments could be found!

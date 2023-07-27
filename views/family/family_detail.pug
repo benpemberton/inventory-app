@@ -1,25 +1,22 @@
 extends ../layout
 
 block content
+  div.page-info
+    h1 #{family.name}
 
-  h1 Family: #{family.name}
-  p #{family.description}
+  div.list-container 
+    if instrument_list.length
+      each instrument in instrument_list
+        div.list-entry
+          a(href=instrument.url) 
+            div.list-entry__inner
+              div.list-entry__image
+              div.list-entry__details
+                p.list-entry__name #{instrument.name}
+                p.list-entry__num-items Products: #{instrument.products}
 
-  div(style='margin-left:20px;margin-top:20px')
+    else
+      p This family doesn't currently have any instruments.  
 
-    h4 Instruments
+  
 
-    dl
-      each instrument in instruments
-        dt
-          a(href=instrument.url) #{instrument.name}
-        dd #{instrument.description}
-
-      else
-        p This family doesn't currently have any instruments.
-
-  hr
-  p
-    a(href=family.url+'/delete') Delete family
-  p
-    a(href=family.url+'/update') Update family

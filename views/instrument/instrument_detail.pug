@@ -2,24 +2,26 @@ extends ../layout
 
 block content
 
-  h1 Instrument: #{instrument.name}
-  p #{instrument.description}
-
-  div(style='margin-left:20px;margin-top:20px')
-
-    h4 Products
-
-    dl
-      each product in products
-        dt
-          a(href=product.url) #{product.name}
-        dd #{product.description}
-
-      else
-        p This instrument doesn't currently have any associated products.
+  div.page-info
+    h1= title
+    div.page-info__details
+      div.page-info__image
+      div.page-info__inner
+        div.page-info__children
+          p Products: #{products.length}
+        div.page-info__actions
+          a(href=instrument.url+'/update'): button.update Update
+          a(href=instrument.url+'/delete'): button.delete Delete
 
   hr
-  p
-    a(href=instrument.url+'/delete') Delete instrument
-  p
-    a(href=instrument.url+'/update') Update instrument
+
+  div.list-container 
+    if products.length
+      each product in products
+        div.list-entry
+          a(href=product.url) 
+            div.list-entry__inner
+              div.list-entry__image
+              div.list-entry__details
+                p.list-entry__name #{product.name}
+                p.list-entry__num-items Units: #{product.children}

@@ -1,15 +1,25 @@
 const Instrument = require("../models/instrument");
 const Family = require("../models/family");
 const Product = require("../models/product");
+const Unit = require("../models/unit");
+const { getChildrenAndUrls } = require("../utils/getChildrenAndUrls");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
 // Display list of all Instruments.
 exports.list = asyncHandler(async (req, res, next) => {
   const allInstruments = await Instrument.find().sort({ name: 1 }).exec();
+
+  // get URL values from Mongoose doc and count children for each object
+  let newArray = await getChildrenAndUrls(
+    allInstruments,
+    Product,
+    "instrument"
+  );
+
   res.render("instrument/instrument_list", {
     title: "Instruments",
-    instrument_list: allInstruments,
+    instrument_list: newArray,
   });
 });
 
@@ -28,10 +38,13 @@ exports.detail = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
+  // get URL values from Mongoose doc and count units for each product
+  let newArray = await getChildrenAndUrls(allProducts, Unit, "product");
+
   res.render("instrument/instrument_detail", {
-    title: "Instrument Detail",
+    title: instrument.name,
     instrument: instrument,
-    products: allProducts,
+    products: newArray,
   });
 });
 

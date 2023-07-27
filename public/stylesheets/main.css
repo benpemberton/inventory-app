@@ -11,9 +11,16 @@ ul {
   padding: 0;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   color: #5b5f71;
   margin: 0;
+}
+
+img {
+  width: 100%;
+  height: auto;
 }
 
 .nav {
@@ -43,6 +50,20 @@ h1, h2, h3 {
   padding: 2rem 4rem;
 }
 
+.page-info__details {
+  display: flex;
+  align-items: end;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.page-info__image {
+  width: 200px;
+  height: 200px;
+}
+.page-info__actions .update {
+  margin-right: 1rem;
+}
+
 .list-container {
   margin-top: 2rem;
   max-width: 900px;
@@ -50,23 +71,31 @@ h1, h2, h3 {
 
 .list-entry {
   margin-bottom: 1rem;
-  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.15);
-  border-radius: 10px;
-  overflow: hidden;
+  height: 7rem;
 }
 .list-entry a {
   text-decoration: none;
   color: #5b5f71;
 }
 .list-entry__inner {
-  min-height: 5rem;
+  height: 100%;
+  padding: 4px;
   background-color: #ffffff;
-  padding: 2px;
   display: flex;
+  gap: 1rem;
+  border-radius: 0.6rem;
+  overflow: hidden;
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.15);
 }
 .list-entry__image {
   width: 15%;
   min-width: 100px;
+  border-radius: 0.5rem 0 0 0.5rem;
+  overflow: hidden;
+}
+.list-entry__image img {
+  object-fit: cover;
+  height: 100%;
 }
 .list-entry__name {
   font-size: 1.4rem;

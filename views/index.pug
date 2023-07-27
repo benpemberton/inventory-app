@@ -11,9 +11,10 @@ block content
           a(href=family.url) 
             div.list-entry__inner
               div.list-entry__image
+                img(src=family.image)
               div.list-entry__details
                 p.list-entry__name #{family.name}
-                p.list-entry__num-items Instruments: 
+                p.list-entry__num-items Instruments: #{family.instruments}
 
     else 
       h4 No instrument families could be found!

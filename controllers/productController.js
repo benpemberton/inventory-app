@@ -1,15 +1,23 @@
 const Product = require("../models/product");
 const Instrument = require("../models/instrument");
 const Unit = require("../models/unit");
+const { getChildrenAndUrls } = require("../utils/getChildrenAndUrls");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
 // Display list of all Products.
 exports.list = asyncHandler(async (req, res, next) => {
-  const allProducts = await Product.find().sort({ name: 1 }).exec();
+  const allProducts = await Product.find()
+    .sort({ name: 1 })
+    .populate("instrument")
+    .exec();
+
+  // get URL values from Mongoose doc and count children for each object
+  let newArray = await getChildrenAndUrls(allProducts, Unit, "product");
+
   res.render("product/product_list", {
     title: "Products",
-    products: allProducts,
+    products: newArray,
   });
 });
 
@@ -29,7 +37,7 @@ exports.detail = asyncHandler(async (req, res, next) => {
   }
 
   res.render("product/product_detail", {
-    title: "Product Detail",
+    title: product.name,
     product: product,
     units: productUnits,
   });

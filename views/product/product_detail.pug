@@ -2,27 +2,34 @@ extends ../layout
 
 block content
 
-  h1 Product: #{product.name}
-  p #{product.description}
-  p Stock: #{units.length}
-
-  div(style='margin-left:20px;margin-top:20px')
-
-    h4 Units
-
-    dl
-      each unit in units
-        dt
-          a(href=unit.url) #{unit._id}
-        dd #{unit.price}
-
-      else
-        p This product doesn't currently have any associated units.
+  div.page-info
+    h1= title
+    div.page-info__details
+      div.page-info__image
+      div.page-info__inner
+        div.page-info__description
+          p #{product.description}
+        div.page-info__children
+          p Units: #{units.length}
+        div.page-info__actions
+          a(href=product.url+'/unit/create'): button.add Add unit
+          a(href=product.url+'/update'): button.update Update
+          a(href=product.url+'/delete'): button.delete Delete
+          
 
   hr
-  p
-    a(href=product.url+'/unit/create') Add unit
-  p
-    a(href=product.url+'/delete') Delete product
-  p
-    a(href=product.url+'/update') Update product
+
+  div.list-container 
+    if units.length
+      each unit in units
+        div.list-entry
+          a(href=unit.url) 
+            div.list-entry__inner
+              div.list-entry__details
+                p.list-entry__name.list-entry__name--unit #[strong Unit:] #{unit._id}
+                p.list-entry__price #[strong Price:] £#{unit.price}
+                p.list-entry__condition #[strong Condition:] #{unit.condition}
+                p.list-entry__location #[strong Location:] #{unit.location}
+
+    else
+      p This product doesn't have any units.  

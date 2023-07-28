@@ -4,15 +4,6 @@ const Unit = require("../models/unit");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
-// // Display list of all Products.
-// exports.list = asyncHandler(async (req, res, next) => {
-//   const allInstruments = await Instrument.find().sort({ name: 1 }).exec();
-//   res.render("instrument/list", {
-//     title: "Instruments",
-//     instrument_list: allInstruments,
-//   });
-// });
-
 // Display detail page for a specific Unit.
 exports.detail = asyncHandler(async (req, res, next) => {
   // Get details of unit and parent product (in parallel)
@@ -28,7 +19,7 @@ exports.detail = asyncHandler(async (req, res, next) => {
   console.log(unit);
 
   res.render("unit/unit_detail", {
-    title: "Unit Detail",
+    title: `Unit: ${unit._id}`,
     unit: unit,
   });
 });

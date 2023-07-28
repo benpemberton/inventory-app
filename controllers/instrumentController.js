@@ -8,7 +8,10 @@ const { body, validationResult } = require("express-validator");
 
 // Display list of all Instruments.
 exports.list = asyncHandler(async (req, res, next) => {
-  const allInstruments = await Instrument.find().sort({ name: 1 }).exec();
+  const allInstruments = await Instrument.find()
+    .sort({ name: 1 })
+    .populate("family")
+    .exec();
 
   // get URL values from Mongoose doc and count children for each object
   let newArray = await getChildrenAndUrls(

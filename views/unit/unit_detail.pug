@@ -1,15 +1,15 @@
 extends ../layout
 
 block content
-
-  h1 Unit: #{unit._id}
-  p #{unit.product.name}
-  p #{unit.price}
-  p #{unit.condition}
-  p #{unit.location}
+  h1= title
+  div.page-info__details--unit
+    h2.page-info__product #{unit.product.name}
+    p.page-info__price #[strong Price:] £#{unit.price}
+    p.page-info__condition #[strong Condition:] #{unit.condition}
+    p.page-info__location #[strong Location:] #{unit.location}
+    div.page-info__actions
+      a(href=unit.url+'/update'): button.update Update
+      a(href=unit.url+'/delete'): button.delete Delete
 
   hr
-  p
-    a(href=unit.url+'/delete') Delete unit
-  p
-    a(href=unit.url+'/update') Update unit
+  

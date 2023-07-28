@@ -1,16 +1,21 @@
 extends ../layout
 
 block content
-  h1= title
-  p Here is a list of all the products that we are currently stocking.
+  div.page-info
+    h1= title
 
-  if products.length
+  div.list-container 
+    if products.length
+      each product in products
+        div.list-entry
+          a(href=product.url) 
+            div.list-entry__inner
+              div.list-entry__image
+              div.list-entry__details
+                p.list-entry__name #{product.name}
+                p.list-entry__children Units: #{product.children}
+                p.list-entry__family Instrument: #{product.instrument}
 
-    ul
-    each product in products
-      li
-        a(href=product.url) #{product.name}
-
-  else 
-
-   h4 No products could be found!
+    else 
+      h4 No products could be found!
+  

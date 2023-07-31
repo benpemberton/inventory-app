@@ -6,6 +6,7 @@ block content
     h1= title
     div.page-info__details
       div.page-info__image
+        img(src=instrument.image)
       div.page-info__inner
         div.page-info__children
           p Products: #{products.length}
@@ -26,4 +27,4 @@ block content
                 p.list-entry__name #{product.name}
                 p.list-entry__num-items Units: #{product.children}
     else
-      p This product doesn't have any units. 
+      p This instrument doesn't have any products. 

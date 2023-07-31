@@ -2,6 +2,7 @@ const Product = require("../models/product");
 const Instrument = require("../models/instrument");
 const Unit = require("../models/unit");
 const { getChildrenAndUrls } = require("../utils/getChildrenAndUrls");
+const { placeholderURL } = require("../utils/placeholderImageURL");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
@@ -56,10 +57,17 @@ exports.create_get = asyncHandler(async (req, res, next) => {
 // Handle Instrument create form on POST.
 exports.create_post = [
   // Validate and sanitize fields.
-  body("name", "Name must be specified.")
+  body("name")
     .trim()
     .isLength({ min: 3, max: 100 })
-    .escape(),
+    .escape()
+    .withMessage("Name must be specified.")
+    .custom(async (value) => {
+      const doc = await Product.findOne({ name: value });
+      if (doc) {
+        throw new Error("Product already exists");
+      }
+    }),
   body("description", "Instrument requires a proper description.")
     .trim()
     .isLength({ min: 3, max: 200 })

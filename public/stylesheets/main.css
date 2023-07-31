@@ -68,6 +68,10 @@ img {
   width: 200px;
   height: 200px;
 }
+.page-info__image img {
+  object-fit: cover;
+  height: 100%;
+}
 .page-info__actions button {
   margin-right: 1rem;
 }

@@ -82,6 +82,11 @@ img {
   &__image {
     width: 200px;
     height: 200px;
+
+    img {
+      object-fit: cover;
+      height: 100%;
+    }
   }
 
   &__actions {

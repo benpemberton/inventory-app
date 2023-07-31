@@ -3,6 +3,7 @@ const Family = require("../models/family");
 const Product = require("../models/product");
 const Unit = require("../models/unit");
 const { getChildrenAndUrls } = require("../utils/getChildrenAndUrls");
+const { placeholderURL } = require("../utils/placeholderImageURL");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
@@ -64,13 +65,22 @@ exports.create_get = asyncHandler(async (req, res, next) => {
 // Handle Instrument create form on POST.
 exports.create_post = [
   // Validate and sanitize fields.
-  body("name", "Name must be specified.")
+  body("name")
     .trim()
     .isLength({ min: 3, max: 100 })
+    .withMessage("Name must be specified.")
+    .custom(async (value) => {
+      const doc = await Instrument.findOne({ name: value });
+      if (doc) {
+        throw new Error("Instrument already exists");
+      }
+    })
     .escape(),
-  body("description", "Instrument requires a proper description.")
+  body("image")
+    .optional({ checkFalsy: true })
     .trim()
-    .isLength({ min: 3, max: 200 })
+    .isURL()
+    .withMessage("Image must have valid URL or left empty.")
     .escape(),
   body("family", "Family must not be empty.")
     .trim()
@@ -82,10 +92,12 @@ exports.create_post = [
     // Extract the validation errors from a request.
     const errors = validationResult(req);
 
+    console.log(errors);
+
     // Create Instrument object with escaped and trimmed data
     const instrument = new Instrument({
       name: req.body.name,
-      description: req.body.description,
+      image: req.body.image,
       family: req.body.family,
     });
 
@@ -104,6 +116,8 @@ exports.create_post = [
       return;
     } else {
       // Data from form is valid.
+      // add placeholder image
+      if (!req.body.image) instrument.image = placeholderURL;
 
       // Save instrument.
       await instrument.save();
@@ -183,13 +197,23 @@ exports.update_post = [
   body("name")
     .trim()
     .isLength({ min: 3, max: 100 })
-    .escape()
     .withMessage("Name must be specified.")
-    .isAlphanumeric()
-    .withMessage("Name has non-alphanumeric characters."),
-  body("description", "Instrument requires a proper description.")
+    .custom(async (value, { req }) => {
+      const doc = await Instrument.findOne({
+        name: value,
+        // make sure to exclude original document when searching for duplicate
+        _id: { $ne: req.params.id },
+      });
+      if (doc) {
+        throw new Error("Instrument already exists.");
+      }
+    })
+    .escape(),
+  body("image")
+    .optional({ checkFalsy: true })
     .trim()
-    .isLength({ min: 3, max: 200 })
+    .isURL()
+    .withMessage("Image must have valid URL or left empty.")
     .escape(),
   body("family", "Family must not be empty.")
     .trim()
@@ -204,7 +228,7 @@ exports.update_post = [
     // Create Instrument object with escaped/trimmed data and old id.
     const instrument = new Instrument({
       name: req.body.name,
-      description: req.body.description,
+      image: req.body.image,
       family: req.body.family,
       _id: req.params.id, // This is required, or a new ID will be assigned!
     });
@@ -213,7 +237,9 @@ exports.update_post = [
       // There are errors. Render form again with sanitized values/error messages.
 
       // Get families for form.
-      const allFamilies = Family.find().exec();
+      const allFamilies = await Family.find().exec();
+
+      console.log(allFamilies);
 
       res.render("instrument/instrument_form", {
         title: "Update Instrument",
@@ -223,7 +249,12 @@ exports.update_post = [
       });
       return;
     } else {
-      // Data from form is valid. Update the record.
+      // Data from form is valid
+
+      // Add placeholder image
+      if (!req.body.image) instrument.image = placeholderURL;
+
+      // Update the record.
       const theinstrument = await Instrument.findByIdAndUpdate(
         req.params.id,
         instrument,

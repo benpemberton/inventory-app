@@ -32,7 +32,7 @@ exports.detail = asyncHandler(async (req, res, next) => {
   // Get details of instrument and all associated products (in parallel)
   const [instrument, allProducts] = await Promise.all([
     Instrument.findById(req.params.id).exec(),
-    Product.find({ instrument: req.params.id }, "name description").exec(),
+    Product.find({ instrument: req.params.id }).exec(),
   ]);
 
   if (instrument === null) {
@@ -92,8 +92,6 @@ exports.create_post = [
     // Extract the validation errors from a request.
     const errors = validationResult(req);
 
-    console.log(errors);
-
     // Create Instrument object with escaped and trimmed data
     const instrument = new Instrument({
       name: req.body.name,
@@ -116,7 +114,7 @@ exports.create_post = [
       return;
     } else {
       // Data from form is valid.
-      // add placeholder image
+      // Add placeholder image
       if (!req.body.image) instrument.image = placeholderURL;
 
       // Save instrument.
@@ -132,7 +130,7 @@ exports.delete_get = asyncHandler(async (req, res, next) => {
   // Get details of instrument and all its associated products (in parallel)
   const [instrument, assocProducts] = await Promise.all([
     Instrument.findById(req.params.id).exec(),
-    Product.find({ instrument: req.params.id }, "name description").exec(),
+    Product.find({ instrument: req.params.id }).sort({name: 1}).exec(),
   ]);
 
   if (instrument === null) {
@@ -140,10 +138,17 @@ exports.delete_get = asyncHandler(async (req, res, next) => {
     res.redirect("/instrument");
   }
 
+  // get URL values from Mongoose doc and count children for each object
+  let newArray = await getChildrenAndUrls(
+    assocProducts,
+    Unit,
+    "product"
+  );
+
   res.render("instrument/instrument_delete", {
     title: "Delete Instrument",
     instrument: instrument,
-    products: assocProducts,
+    products: newArray,
   });
 });
 
@@ -238,8 +243,6 @@ exports.update_post = [
 
       // Get families for form.
       const allFamilies = await Family.find().exec();
-
-      console.log(allFamilies);
 
       res.render("instrument/instrument_form", {
         title: "Update Instrument",

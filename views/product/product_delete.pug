@@ -1,21 +1,25 @@
 extends ../layout
 
 block content
-  h1 #{title}: #{product.name}
+  div.page-info
+    h1 #{title}: #{product.name}
 
   if units.length
 
     p #[strong Delete the following units before attempting to delete this product.]
 
-    div(style='margin-left:20px;margin-top:20px')
+    hr
 
-      h4 Units
-
-      dl
+    div.list-container 
       each unit in units
-        dt
-          a(href=unit.url) #{unit.name}
-        dd #{unit.description}
+        div.list-entry
+          a(href=unit.url) 
+            div.list-entry__inner
+              div.list-entry__details
+                p.list-entry__name.list-entry__name--unit #[strong Unit:] #{unit._id}
+                p.list-entry__price #[strong Price:] £#{unit.price}
+                p.list-entry__condition #[strong Condition:] #{unit.condition}
+                p.list-entry__location #[strong Location:] #{unit.location}
 
   else
     p Do you really want to delete this Product?

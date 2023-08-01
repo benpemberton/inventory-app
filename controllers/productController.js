@@ -60,19 +60,25 @@ exports.create_post = [
   body("name")
     .trim()
     .isLength({ min: 3, max: 100 })
-    .escape()
     .withMessage("Name must be specified.")
     .custom(async (value) => {
       const doc = await Product.findOne({ name: value });
       if (doc) {
         throw new Error("Product already exists");
       }
-    }),
-  body("description", "Instrument requires a proper description.")
+    })
+    .escape(),
+  body("description", "Product requires a proper description.")
     .trim()
     .isLength({ min: 3, max: 200 })
     .escape(),
-  body("instrument", "Family must not be empty.")
+  body("image")
+    .optional({ checkFalsy: true })
+    .trim()
+    .isURL()
+    .withMessage("Image must have valid URL or left empty.")
+    .escape(),
+  body("instrument", "Instrument must not be empty.")
     .trim()
     .isLength({ min: 1 })
     .escape(),
@@ -86,6 +92,7 @@ exports.create_post = [
     const product = new Product({
       name: req.body.name,
       description: req.body.description,
+      image: req.body.image,
       instrument: req.body.instrument,
     });
 
@@ -104,6 +111,8 @@ exports.create_post = [
       return;
     } else {
       // Data from form is valid.
+      // Add placeholder image
+      if (!req.body.image) product.image = placeholderURL;
 
       // Save instrument.
       await product.save();
@@ -118,8 +127,10 @@ exports.delete_get = asyncHandler(async (req, res, next) => {
   // Get details of products and all its units(in parallel)
   const [product, productUnits] = await Promise.all([
     Product.findById(req.params.id).exec(),
-    Unit.find({ product: req.params.id }, "name description").exec(),
+    Unit.find({ product: req.params.id }).exec(),
   ]);
+
+  console.log(productUnits)
 
   if (product === null) {
     // No results.
@@ -138,7 +149,7 @@ exports.delete_post = asyncHandler(async (req, res, next) => {
   // Get details of product and all its units (in parallel)
   const [product, productUnits] = await Promise.all([
     Product.findById(req.params.id).exec(),
-    Unit.find({ product: req.params.id }, "name description").exec(),
+    Unit.find({ product: req.params.id }).exec(),
   ]);
 
   if (productUnits.length > 0) {
@@ -150,7 +161,7 @@ exports.delete_post = asyncHandler(async (req, res, next) => {
     });
     return;
   } else {
-    // Product has no units. Delete object and redirect to the list of instrument.
+    // Product has no units. Delete object and redirect to the list of instruments.
     await Product.findByIdAndRemove(req.body.productid);
     res.redirect("/instrument");
   }
@@ -180,13 +191,30 @@ exports.update_get = asyncHandler(async (req, res, next) => {
 // Handle Product update on POST.
 exports.update_post = [
   // Validate and sanitize fields.
-  body("name", "Name must be specified.")
+  body("name")
     .trim()
     .isLength({ min: 3, max: 100 })
+    .withMessage("Name must be specified.")
+    .custom(async (value, { req }) => {
+      const doc = await Product.findOne({ 
+        name: value,
+      // make sure to exclude original document when searching for duplicate
+      _id: { $ne: req.params.id }
+      });
+      if (doc) {
+        throw new Error("Product already exists");
+      }
+    })
     .escape(),
   body("description", "Product requires a proper description.")
     .trim()
     .isLength({ min: 3, max: 200 })
+    .escape(),
+  body("image")
+    .optional({ checkFalsy: true })
+    .trim()
+    .isURL()
+    .withMessage("Image must have valid URL or left empty.")
     .escape(),
   body("instrument", "Instrument must not be empty.")
     .trim()
@@ -202,6 +230,7 @@ exports.update_post = [
     const product = new Product({
       name: req.body.name,
       description: req.body.description,
+      image: req.body.image,
       instrument: req.body.instrument,
       _id: req.params.id, // This is required, or a new ID will be assigned!
     });
@@ -210,17 +239,22 @@ exports.update_post = [
       // There are errors. Render form again with sanitized values/error messages.
 
       // Get families for form.
-      const allInstruments = Instrument.find().exec();
+      const allInstruments = await Instrument.find().exec();
 
       res.render("product/product_form", {
         title: "Update Product",
         product: product,
-        instrument: allInstruments,
+        instruments: allInstruments,
         errors: errors.array(),
       });
       return;
     } else {
       // Data from form is valid. Update the record.
+
+      // Add placeholder image
+      if (!req.body.image) product.image = placeholderURL;
+
+      // Update the record.
       const theproduct = await Product.findByIdAndUpdate(
         req.params.id,
         product,

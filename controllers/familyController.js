@@ -1,15 +1,15 @@
 const Family = require("../models/family");
 const Instrument = require("../models/instrument");
 const Product = require("../models/product");
+const { getChildrenAndUrls } = require("../utils/getChildrenAndUrls");
 const asyncHandler = require("express-async-handler");
-const { body, validationResult } = require("express-validator");
 
 // Display detail page for a specific Family.
 exports.detail = asyncHandler(async (req, res, next) => {
   // Get details of family and all their instruments (in parallel)
   const [family, instrumentsInFamily] = await Promise.all([
     Family.findById(req.params.id).exec(),
-    Instrument.find({ family: req.params.id }, "name description").exec(),
+    Instrument.find({ family: req.params.id }).populate("family").exec(),
   ]);
 
   if (family === null) {
@@ -19,27 +19,15 @@ exports.detail = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
-  let newArray = [];
-
-  // get URL values from Mongoose doc and count products for each instrument
-  const getProductsAndUrls = async () => {
-    if (instrumentsInFamily) {
-      for (let instrument of instrumentsInFamily) {
-        let obj = instrument.toObject();
-        obj.url = instrument.url;
-        let products = await Product.find({
-          instrument: obj._id,
-        }).exec();
-        obj.products = products.length;
-        newArray.push(obj);
-      }
-    }
-  };
-
-  await getProductsAndUrls();
-
+  // get URL values from Mongoose doc and count children for each object
+  let newArray = await getChildrenAndUrls(
+    instrumentsInFamily,
+    Product,
+    "instrument"
+  );
+  
   res.render("family/family_detail", {
-    title: "Family Detail",
+    title: family.name,
     family: family,
     instrument_list: newArray,
   });

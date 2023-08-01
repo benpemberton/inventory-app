@@ -7,6 +7,7 @@ const Schema = mongoose.Schema;
 const ProductSchema = new Schema({
   name: { type: String, required: true, minLength: 3, maxLength: 100 },
   description: { type: String, required: true, minLength: 3, maxLength: 200 },
+  image: { type: String, required: true },
   instrument: {
     type: Schema.Types.ObjectId,
     ref: "Instrument",

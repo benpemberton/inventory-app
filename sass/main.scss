@@ -22,6 +22,7 @@ h2,
 h3 {
   color: $color_grey-dark;
   margin: 0;
+  margin-bottom: 1rem;
 }
 
 p {
@@ -60,6 +61,39 @@ img {
         margin-right: 3rem;
       }
     }
+  }
+}
+
+.add-item {
+  position: relative; 
+
+  &__button{
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 0.7rem;
+    background-color: $color_light;
+    color: $color_red;
+    border-radius: 0.6rem;
+    border: none;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &__dropdown {
+    position: absolute;
+    transition: opacity ease 0.2s;
+
+    &--hidden {
+      max-height:0;
+      opacity:0;  
+   }
+
+   &--expanded {
+     opacity:1;
+     max-height:1000px;
+  }
   }
 }
 

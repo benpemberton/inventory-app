@@ -14,8 +14,13 @@ html
             li
               a(href='/product') Products
         div.add-item
-          button.add-item__button +
+          button.add-item__button + ADD NEW
+          div.add-item__dropdown.add-item__dropdown--hidden
+            p: a(href='/instrument/create') Instrument
+            p: a(href='/product/create') Product
 
       main.main
         block content
+
+      script(type='text/javascript', src='/js/addItemHandler.js')
 

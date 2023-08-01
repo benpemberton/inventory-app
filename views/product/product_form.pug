@@ -11,6 +11,10 @@ block content
       textarea#description.form-control(type='textarea' placeholder='Description' name='description' required='true') #{undefined===product ? '' : product.description}
 
     div.form-group
+      label(for='image') Image URL:
+      input#image.form-control(type='text' placeholder='URL is optional' name='image' value=(undefined===image ? '' : product.image))
+
+    div.form-group
       label(for='instrument') Instrument:
       select#instrument.form-control(type='select', placeholder='Select instrument' name='instrument' required='true' )
         - instruments.sort(function(a, b) {return (a < b) ? -1 : (a > b) ? 1 : 0;});

@@ -16,6 +16,7 @@ h2,
 h3 {
   color: #5b5f71;
   margin: 0;
+  margin-bottom: 1rem;
 }
 
 p {
@@ -49,6 +50,34 @@ img {
 }
 .nav__links li:first-child {
   margin-right: 3rem;
+}
+
+.add-item {
+  position: relative;
+}
+.add-item__button {
+  font-size: 0.9rem;
+  font-weight: bold;
+  padding: 0.7rem;
+  background-color: #ffffff;
+  color: #dd2a3b;
+  border-radius: 0.6rem;
+  border: none;
+}
+.add-item__button:hover {
+  cursor: pointer;
+}
+.add-item__dropdown {
+  position: absolute;
+  transition: opacity ease 0.2s;
+}
+.add-item__dropdown--hidden {
+  max-height: 0;
+  opacity: 0;
+}
+.add-item__dropdown--expanded {
+  opacity: 1;
+  max-height: 1000px;
 }
 
 .main {

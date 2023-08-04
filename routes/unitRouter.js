@@ -2,9 +2,6 @@ let express = require("express");
 let router = express.Router();
 const unit_controller = require("../controllers/unitController");
 
-// // GET list of units
-// router.get("/", unit_controller.list);
-
 // NOTE This must come before routes that display unit (uses id).
 router.get("/create", unit_controller.create_get);
 

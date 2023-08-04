@@ -16,8 +16,9 @@ html
         div.add-item
           button.add-item__button + ADD NEW
           div.add-item__dropdown.add-item__dropdown--hidden
-            p: a(href='/instrument/create') Instrument
-            p: a(href='/product/create') Product
+            ul
+              li: a(href='/instrument/create') Instrument
+              li: a(href='/product/create') Product
 
       main.main
         block content

@@ -3,6 +3,7 @@ let express = require("express");
 let path = require("path");
 let cookieParser = require("cookie-parser");
 let logger = require("morgan");
+let compression = require("compression");
 
 let indexRouter = require("./routes/index");
 let familyRouter = require("./routes/familyRouter");
@@ -34,7 +35,8 @@ async function main() {
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
-app.use(logger("dev"));
+app.use(compression()); // Compress all routes
+app.use(logger("tiny"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

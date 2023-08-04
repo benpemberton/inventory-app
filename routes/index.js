@@ -1,6 +1,6 @@
 let express = require("express");
 let router = express.Router();
-const index_controller = require('../controllers/indexController')
+const index_controller = require("../controllers/indexController");
 
 /* GET home page. */
 router.get("/", index_controller.family_list);

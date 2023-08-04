@@ -70,14 +70,12 @@ exports.create_post = [
     .escape(),
   body("description", "Product requires a proper description.")
     .trim()
-    .isLength({ min: 3, max: 200 })
-    .escape(),
+    .isLength({ min: 3, max: 300 }),
   body("image")
     .optional({ checkFalsy: true })
     .trim()
     .isURL()
-    .withMessage("Image must have valid URL or left empty.")
-    .escape(),
+    .withMessage("Image must have valid URL or left empty."),
   body("instrument", "Instrument must not be empty.")
     .trim()
     .isLength({ min: 1 })
@@ -95,6 +93,8 @@ exports.create_post = [
       image: req.body.image,
       instrument: req.body.instrument,
     });
+
+    console.log(product.image);
 
     if (!errors.isEmpty()) {
       // There are errors. Render form again with sanitized values/errors messages.
@@ -130,7 +130,7 @@ exports.delete_get = asyncHandler(async (req, res, next) => {
     Unit.find({ product: req.params.id }).exec(),
   ]);
 
-  console.log(productUnits)
+  console.log(productUnits);
 
   if (product === null) {
     // No results.
@@ -196,10 +196,10 @@ exports.update_post = [
     .isLength({ min: 3, max: 100 })
     .withMessage("Name must be specified.")
     .custom(async (value, { req }) => {
-      const doc = await Product.findOne({ 
+      const doc = await Product.findOne({
         name: value,
-      // make sure to exclude original document when searching for duplicate
-      _id: { $ne: req.params.id }
+        // make sure to exclude original document when searching for duplicate
+        _id: { $ne: req.params.id },
       });
       if (doc) {
         throw new Error("Product already exists");
@@ -208,14 +208,12 @@ exports.update_post = [
     .escape(),
   body("description", "Product requires a proper description.")
     .trim()
-    .isLength({ min: 3, max: 200 })
-    .escape(),
+    .isLength({ min: 3, max: 300 }),
   body("image")
     .optional({ checkFalsy: true })
     .trim()
     .isURL()
-    .withMessage("Image must have valid URL or left empty.")
-    .escape(),
+    .withMessage("Image must have valid URL or left empty."),
   body("instrument", "Instrument must not be empty.")
     .trim()
     .isLength({ min: 1 })

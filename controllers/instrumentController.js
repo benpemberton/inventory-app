@@ -80,8 +80,7 @@ exports.create_post = [
     .optional({ checkFalsy: true })
     .trim()
     .isURL()
-    .withMessage("Image must have valid URL or left empty.")
-    .escape(),
+    .withMessage("Image must have valid URL or left empty."),
   body("family", "Family must not be empty.")
     .trim()
     .isLength({ min: 1 })
@@ -130,7 +129,7 @@ exports.delete_get = asyncHandler(async (req, res, next) => {
   // Get details of instrument and all its associated products (in parallel)
   const [instrument, assocProducts] = await Promise.all([
     Instrument.findById(req.params.id).exec(),
-    Product.find({ instrument: req.params.id }).sort({name: 1}).exec(),
+    Product.find({ instrument: req.params.id }).sort({ name: 1 }).exec(),
   ]);
 
   if (instrument === null) {
@@ -139,11 +138,7 @@ exports.delete_get = asyncHandler(async (req, res, next) => {
   }
 
   // get URL values from Mongoose doc and count children for each object
-  let newArray = await getChildrenAndUrls(
-    assocProducts,
-    Unit,
-    "product"
-  );
+  let newArray = await getChildrenAndUrls(assocProducts, Unit, "product");
 
   res.render("instrument/instrument_delete", {
     title: "Delete Instrument",
@@ -218,8 +213,7 @@ exports.update_post = [
     .optional({ checkFalsy: true })
     .trim()
     .isURL()
-    .withMessage("Image must have valid URL or left empty.")
-    .escape(),
+    .withMessage("Image must have valid URL or left empty."),
   body("family", "Family must not be empty.")
     .trim()
     .isLength({ min: 1 })

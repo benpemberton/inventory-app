@@ -4,6 +4,7 @@ let path = require("path");
 let cookieParser = require("cookie-parser");
 let logger = require("morgan");
 let compression = require("compression");
+require("dotenv").config();
 
 let indexRouter = require("./routes/index");
 let familyRouter = require("./routes/familyRouter");

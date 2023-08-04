@@ -1,9 +1,0 @@
-name: Deploy to production
-pull_request:
-  branches: [main]
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      env:
-        MONGO_URI: ${{ secrets.MONGO_URI}}
